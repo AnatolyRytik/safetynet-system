@@ -1,7 +1,7 @@
 package com.safetynet.safetynetsystem.controller;
 
 import com.safetynet.safetynetsystem.model.Firestation;
-import com.safetynet.safetynetsystem.service.FirestationService;
+import com.safetynet.safetynetsystem.service.FireStationService;
 import com.safetynet.safetynetsystem.util.ValidationUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +13,11 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-public class FirestationController {
+public class FireStationController {
 
-    private final FirestationService firestationService;
+    private final FireStationService firestationService;
 
-    public FirestationController(FirestationService firestationService) {
+    public FireStationController(FireStationService firestationService) {
         this.firestationService = firestationService;
     }
 

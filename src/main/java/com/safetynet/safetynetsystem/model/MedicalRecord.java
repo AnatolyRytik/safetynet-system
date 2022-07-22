@@ -15,7 +15,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Medicalrecord extends AbstractBaseEntity {
+public class MedicalRecord extends AbstractBaseEntity {
 
     String firstName;
     String lastName;
@@ -32,8 +32,8 @@ public class Medicalrecord extends AbstractBaseEntity {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Medicalrecord)) return false;
-        Medicalrecord that = (Medicalrecord) o;
+        if (!(o instanceof MedicalRecord)) return false;
+        MedicalRecord that = (MedicalRecord) o;
         return Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(birthdate, that.birthdate) && Objects.equals(medications, that.medications) && Objects.equals(allergies, that.allergies);
     }
 

@@ -4,10 +4,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.safetynetsystem.model.Firestation;
-import com.safetynet.safetynetsystem.model.Medicalrecord;
+import com.safetynet.safetynetsystem.model.MedicalRecord;
 import com.safetynet.safetynetsystem.model.Person;
-import com.safetynet.safetynetsystem.repository.FirestationRepository;
-import com.safetynet.safetynetsystem.repository.MedicalRecordsRepository;
+import com.safetynet.safetynetsystem.repository.FireStationRepository;
+import com.safetynet.safetynetsystem.repository.MedicalRecordRepository;
 import com.safetynet.safetynetsystem.repository.PersonRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -30,7 +30,7 @@ public class SafetynetSystemApplication {
     }
 
     @Bean
-    CommandLineRunner runner(PersonRepository personRepository, FirestationRepository firestationRepository, MedicalRecordsRepository medicalRecordsRepository) {
+    CommandLineRunner runner(PersonRepository personRepository, FireStationRepository firestationRepository, MedicalRecordRepository medicalRecordRepository) {
         return args -> {
             // read JSON and load json
             mapper = new ObjectMapper();
@@ -46,8 +46,8 @@ public class SafetynetSystemApplication {
                 List<Firestation> fireStations = getListFromJson("firestations", Firestation.class);
                 firestationRepository.saveAll(fireStations);
 
-                List<Medicalrecord> medicalRecords = getListFromJson("medicalrecords", Medicalrecord.class);
-                medicalRecordsRepository.saveAll(medicalRecords);
+                List<MedicalRecord> medicalRecords = getListFromJson("medicalrecords", MedicalRecord.class);
+                medicalRecordRepository.saveAll(medicalRecords);
 
                 System.out.println("Data Saved!");
             } catch (IOException e) {
