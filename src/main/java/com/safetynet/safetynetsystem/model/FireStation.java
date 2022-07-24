@@ -12,7 +12,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Firestation extends AbstractBaseEntity {
+public class FireStation extends AbstractBaseEntity {
 
     private String station;
     private String address;
@@ -21,7 +21,7 @@ public class Firestation extends AbstractBaseEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Firestation that = (Firestation) o;
+        FireStation that = (FireStation) o;
         return station != null && Objects.equals(station, that.station);
     }
 

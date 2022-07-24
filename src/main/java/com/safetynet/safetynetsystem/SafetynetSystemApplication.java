@@ -3,7 +3,7 @@ package com.safetynet.safetynetsystem;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.safetynet.safetynetsystem.model.Firestation;
+import com.safetynet.safetynetsystem.model.FireStation;
 import com.safetynet.safetynetsystem.model.MedicalRecord;
 import com.safetynet.safetynetsystem.model.Person;
 import com.safetynet.safetynetsystem.repository.FireStationRepository;
@@ -43,7 +43,7 @@ public class SafetynetSystemApplication {
                 List<Person> persons = getListFromJson("persons", Person.class);
                 personRepository.saveAll(persons);
 
-                List<Firestation> fireStations = getListFromJson("firestations", Firestation.class);
+                List<FireStation> fireStations = getListFromJson("firestations", FireStation.class);
                 firestationRepository.saveAll(fireStations);
 
                 List<MedicalRecord> medicalRecords = getListFromJson("medicalrecords", MedicalRecord.class);

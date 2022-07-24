@@ -3,6 +3,7 @@ package com.safetynet.safetynetsystem.controller;
 import com.safetynet.safetynetsystem.model.MedicalRecord;
 import com.safetynet.safetynetsystem.service.MedicalRecordService;
 import com.safetynet.safetynetsystem.util.ValidationUtil;
+import com.safetynet.safetynetsystem.util.error.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,19 +21,25 @@ public class MedicalRecordController {
         this.medicalRecordService = medicalRecordService;
     }
 
-    @GetMapping(value = "/medicalrecord", produces = "application/json")
-    public ResponseEntity<List> getAll() {
+    @GetMapping(value = "/medicalRecord", produces = "application/json")
+    public ResponseEntity<List<MedicalRecord>> getAll() {
         return ResponseEntity.ok()
                 .body(medicalRecordService.getAll());
     }
 
-    @GetMapping(value = "/medicalrecord/{id}", produces = "application/json")
+    @GetMapping(value = "/medicalRecord/{id}", produces = "application/json")
     public ResponseEntity<MedicalRecord> getById(@PathVariable("id") Integer id) {
-        MedicalRecord medicalRecord = medicalRecordService.getById(id);
+        MedicalRecord medicalRecord;
+        try {
+            medicalRecord = medicalRecordService.getById(id);
+        } catch (NotFoundException e) {
+            //log
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         return new ResponseEntity<>(medicalRecord, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/medicalrecord", produces = "application/json")
+    @PostMapping(value = "/medicalRecord", produces = "application/json")
     public ResponseEntity<MedicalRecord> create(@Valid @RequestBody MedicalRecord medicalRecord) {
         ValidationUtil.checkNew(medicalRecord);
         MedicalRecord created = medicalRecordService.save(medicalRecord);
@@ -42,14 +49,14 @@ public class MedicalRecordController {
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
-    @PutMapping(value = "/medicalrecord/{id}", produces = "application/json")
+    @PutMapping(value = "/medicalRecord/{id}", produces = "application/json")
     public ResponseEntity<MedicalRecord> updateById(@Valid @RequestBody MedicalRecord medicalRecord,
                                                     @PathVariable("id") Integer id) {
         ValidationUtil.assureIdConsistent(medicalRecord, id);
         return new ResponseEntity<>(medicalRecordService.update(medicalRecord, id), HttpStatus.OK);
     }
 
-    @DeleteMapping("/medicalrecord/{id}")
+    @DeleteMapping("/medicalRecord/{id}")
     public ResponseEntity<MedicalRecord> deleteById(@PathVariable("id") Integer id) {
         medicalRecordService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

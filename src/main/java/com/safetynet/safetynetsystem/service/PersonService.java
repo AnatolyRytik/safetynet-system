@@ -35,7 +35,9 @@ public class PersonService {
 
     public Person update(Person person, Integer id) {
         Assert.notNull(person, "person must not be null");
-        return checkNotFoundWithId(personRepository.save(person), id);
+        personRepository.findById(id).orElseThrow(() -> new NotFoundException(
+                ("Person not found")));
+        return personRepository.save(person);
     }
 
     public void deleteById(Integer id) {

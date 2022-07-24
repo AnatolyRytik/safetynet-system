@@ -1,6 +1,6 @@
 package com.safetynet.safetynetsystem.service;
 
-import com.safetynet.safetynetsystem.model.Firestation;
+import com.safetynet.safetynetsystem.model.FireStation;
 import com.safetynet.safetynetsystem.repository.FireStationRepository;
 import com.safetynet.safetynetsystem.util.error.NotFoundException;
 import org.springframework.stereotype.Service;
@@ -18,23 +18,25 @@ public class FireStationService {
         this.firestationRepository = firestationRepository;
     }
 
-    public Firestation save(Firestation firestation) {
+    public FireStation save(FireStation firestation) {
         Assert.notNull(firestation, "Fire station must not be null");
         return firestationRepository.save(firestation);
     }
 
-    public List<Firestation> getAll() {
+    public List<FireStation> getAll() {
         return firestationRepository.findAll();
     }
 
-    public Firestation getById(Integer id) {
+    public FireStation getById(Integer id) {
         return firestationRepository.findById(id).orElseThrow(() -> new NotFoundException(
                 ("Fire station not found")));
     }
 
-    public Firestation update(Firestation firestation, Integer id) {
+    public FireStation update(FireStation firestation, Integer id) {
         Assert.notNull(firestation, "Fire station must not be null");
-        return checkNotFoundWithId(firestationRepository.save(firestation), id);
+        firestationRepository.findById(id).orElseThrow(() -> new NotFoundException(
+                ("Fire station not found")));
+        return firestationRepository.save(firestation);
     }
 
     public void deleteById(Integer id) {

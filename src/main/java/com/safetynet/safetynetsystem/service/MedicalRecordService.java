@@ -34,7 +34,9 @@ public class MedicalRecordService {
 
     public MedicalRecord update(MedicalRecord medicalRecord, Integer id) {
         Assert.notNull(medicalRecord, "Medical record must not be null");
-        return checkNotFoundWithId(medicalRecordRepository.save(medicalRecord), id);
+        medicalRecordRepository.findById(id).orElseThrow(() -> new NotFoundException(
+                ("Medical record not found")));
+        return medicalRecordRepository.save(medicalRecord);
     }
 
     public void deleteById(Integer id) {

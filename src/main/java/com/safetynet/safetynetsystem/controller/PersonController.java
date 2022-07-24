@@ -3,6 +3,7 @@ package com.safetynet.safetynetsystem.controller;
 import com.safetynet.safetynetsystem.model.Person;
 import com.safetynet.safetynetsystem.service.PersonService;
 import com.safetynet.safetynetsystem.util.ValidationUtil;
+import com.safetynet.safetynetsystem.util.error.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,14 +23,20 @@ public class PersonController {
     }
 
     @GetMapping(value = "/person", produces = "application/json")
-    public ResponseEntity<List> getAll() {
+    public ResponseEntity<List<Person>> getAll() {
         return ResponseEntity.ok()
                 .body(personService.getAll());
     }
 
     @GetMapping(value = "/person/{id}", produces = "application/json")
     public ResponseEntity<Person> getById(@PathVariable("id") Integer id) {
-        Person person = personService.getById(id);
+        Person person;
+        try {
+            person = personService.getById(id);
+        } catch (NotFoundException e) {
+            //log
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         return new ResponseEntity<>(person, HttpStatus.OK);
     }
 
