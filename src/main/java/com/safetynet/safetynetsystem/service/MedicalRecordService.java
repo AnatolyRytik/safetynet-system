@@ -43,4 +43,17 @@ public class MedicalRecordService {
         checkNotFoundWithId(medicalRecordRepository.findById(id), id);
         medicalRecordRepository.deleteById(id);
     }
+
+    public MedicalRecord updateByFirstNameAndLastName(MedicalRecord medicalRecord, String firstName, String lastName) {
+        Assert.notNull(medicalRecord, "medicalRecord must not be null");
+        MedicalRecord foundMedicalRecord = medicalRecordRepository.findByFirstNameAndLastName(firstName, lastName).orElseThrow(() -> new NotFoundException(
+                ("Medical record not found")));
+        return medicalRecordRepository.save(medicalRecord);
+    }
+
+    public void deleteByFirstNameAndLastName(String firstName, String lastName) {
+        MedicalRecord medicalRecord = medicalRecordRepository.findByFirstNameAndLastName(firstName, lastName).orElseThrow(() -> new NotFoundException(
+                ("Medical record not found")));
+        medicalRecordRepository.delete(medicalRecord);
+    }
 }

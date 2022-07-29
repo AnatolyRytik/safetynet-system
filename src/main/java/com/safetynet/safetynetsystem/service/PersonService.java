@@ -33,7 +33,7 @@ public class PersonService {
                 ("Person not found")));
     }
 
-    public Person update(Person person, Integer id) {
+    public Person updateById(Person person, Integer id) {
         Assert.notNull(person, "person must not be null");
         personRepository.findById(id).orElseThrow(() -> new NotFoundException(
                 ("Person not found")));
@@ -43,6 +43,19 @@ public class PersonService {
     public void deleteById(Integer id) {
         checkNotFoundWithId(personRepository.findById(id), id);
         personRepository.deleteById(id);
+    }
+
+    public Person updateByFirstNameAndLastName(Person person, String firstName, String lastName) {
+        Assert.notNull(person, "person must not be null");
+        Person foundPerson = personRepository.findByFirstNameAndLastName(firstName, lastName).orElseThrow(() -> new NotFoundException(
+                ("Person not found")));
+        return personRepository.save(person);
+    }
+
+    public void deleteByFirstNameAndLastName(String firstName, String lastName) {
+        Person person = personRepository.findByFirstNameAndLastName(firstName, lastName).orElseThrow(() -> new NotFoundException(
+                ("Person not found")));
+        personRepository.delete(person);
     }
 
 }

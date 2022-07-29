@@ -61,4 +61,30 @@ public class MedicalRecordController {
         medicalRecordService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @DeleteMapping("/medicalRecord")
+    public ResponseEntity<MedicalRecord> deleteByFirstNameAndLastName(@RequestParam String firstName,
+                                                                      @RequestParam String lastName) {
+        try {
+            medicalRecordService.deleteByFirstNameAndLastName(firstName, lastName);
+        } catch (NotFoundException e) {
+            //log
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping(value = "/medicalRecord", produces = "application/json")
+    public ResponseEntity<MedicalRecord> updateByFirstNameAndLastName(@Valid @RequestBody MedicalRecord medicalRecord,
+                                                                      @RequestParam String firstName,
+                                                                      @RequestParam String lastName) {
+        MedicalRecord medicalRecordUpdated;
+        try {
+            medicalRecordUpdated = medicalRecordService.updateByFirstNameAndLastName(medicalRecord, firstName, lastName);
+        } catch (NotFoundException e) {
+            //log
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<MedicalRecord>(medicalRecordUpdated, HttpStatus.OK);
+    }
 }

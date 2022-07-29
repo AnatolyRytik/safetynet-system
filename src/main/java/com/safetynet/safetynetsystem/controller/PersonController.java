@@ -54,12 +54,51 @@ public class PersonController {
     public ResponseEntity<Person> updateById(@Valid @RequestBody Person person,
                                              @PathVariable("id") Integer id) {
         ValidationUtil.assureIdConsistent(person, id);
-        return new ResponseEntity<>(personService.update(person, id), HttpStatus.OK);
+        Person personUpdated;
+        try {
+            personUpdated = personService.updateById(person, id);
+        } catch (NotFoundException e) {
+            //log
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<Person>(personUpdated, HttpStatus.OK);
     }
 
     @DeleteMapping("/person/{id}")
     public ResponseEntity<Person> deleteById(@PathVariable("id") Integer id) {
-        personService.deleteById(id);
+        try {
+            personService.deleteById(id);
+        } catch (NotFoundException e) {
+            //log
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @DeleteMapping("/person")
+    public ResponseEntity<Person> deleteByFirstNameAndLastName(@RequestParam String firstName,
+                                                               @RequestParam String lastName) {
+        try {
+            personService.deleteByFirstNameAndLastName(firstName, lastName);
+        } catch (NotFoundException e) {
+            //log
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping(value = "/person", produces = "application/json")
+    public ResponseEntity<Person> updateByFirstNameAndLastName(@Valid @RequestBody Person person,
+                                                               @RequestParam String firstName,
+                                                               @RequestParam String lastName) {
+        Person personUpdated;
+        try {
+            personUpdated = personService.updateByFirstNameAndLastName(person, firstName, lastName);
+        } catch (NotFoundException e) {
+            //log
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<Person>(personUpdated, HttpStatus.OK);
+    }
+
 }
