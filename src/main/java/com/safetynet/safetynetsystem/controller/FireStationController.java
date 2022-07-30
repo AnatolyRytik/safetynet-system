@@ -3,7 +3,6 @@ package com.safetynet.safetynetsystem.controller;
 import com.safetynet.safetynetsystem.model.FireStation;
 import com.safetynet.safetynetsystem.service.FireStationService;
 import com.safetynet.safetynetsystem.util.ValidationUtil;
-import com.safetynet.safetynetsystem.util.error.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +10,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
 
 @RestController
 public class FireStationController {
@@ -20,24 +18,6 @@ public class FireStationController {
 
     public FireStationController(FireStationService firestationService) {
         this.firestationService = firestationService;
-    }
-
-    @GetMapping(value = "/firestation", produces = "application/json")
-    public ResponseEntity<List<FireStation>> getAll() {
-        return ResponseEntity.ok()
-                .body(firestationService.getAll());
-    }
-
-    @GetMapping(value = "/firestation/{id}", produces = "application/json")
-    public ResponseEntity<FireStation> getById(@PathVariable("id") Integer id) {
-        FireStation fireStation;
-        try {
-            fireStation = firestationService.getById(id);
-        } catch (NotFoundException e) {
-            //log
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(fireStation, HttpStatus.OK);
     }
 
     @PostMapping(value = "/firestation", produces = "application/json")

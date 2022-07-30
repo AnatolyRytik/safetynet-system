@@ -11,7 +11,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
 
 @RestController
 public class MedicalRecordController {
@@ -19,24 +18,6 @@ public class MedicalRecordController {
 
     public MedicalRecordController(MedicalRecordService medicalRecordService) {
         this.medicalRecordService = medicalRecordService;
-    }
-
-    @GetMapping(value = "/medicalRecord", produces = "application/json")
-    public ResponseEntity<List<MedicalRecord>> getAll() {
-        return ResponseEntity.ok()
-                .body(medicalRecordService.getAll());
-    }
-
-    @GetMapping(value = "/medicalRecord/{id}", produces = "application/json")
-    public ResponseEntity<MedicalRecord> getById(@PathVariable("id") Integer id) {
-        MedicalRecord medicalRecord;
-        try {
-            medicalRecord = medicalRecordService.getById(id);
-        } catch (NotFoundException e) {
-            //log
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(medicalRecord, HttpStatus.OK);
     }
 
     @PostMapping(value = "/medicalRecord", produces = "application/json")
@@ -47,19 +28,6 @@ public class MedicalRecordController {
                 .path("/{id}")
                 .buildAndExpand(created.getId()).toUri();
         return ResponseEntity.created(uriOfNewResource).body(created);
-    }
-
-    @PutMapping(value = "/medicalRecord/{id}", produces = "application/json")
-    public ResponseEntity<MedicalRecord> updateById(@Valid @RequestBody MedicalRecord medicalRecord,
-                                                    @PathVariable("id") Integer id) {
-        ValidationUtil.assureIdConsistent(medicalRecord, id);
-        return new ResponseEntity<>(medicalRecordService.update(medicalRecord, id), HttpStatus.OK);
-    }
-
-    @DeleteMapping("/medicalRecord/{id}")
-    public ResponseEntity<MedicalRecord> deleteById(@PathVariable("id") Integer id) {
-        medicalRecordService.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/medicalRecord")

@@ -22,24 +22,6 @@ public class PersonController {
         this.personService = personService;
     }
 
-    @GetMapping(value = "/person", produces = "application/json")
-    public ResponseEntity<List<Person>> getAll() {
-        return ResponseEntity.ok()
-                .body(personService.getAll());
-    }
-
-    @GetMapping(value = "/person/{id}", produces = "application/json")
-    public ResponseEntity<Person> getById(@PathVariable("id") Integer id) {
-        Person person;
-        try {
-            person = personService.getById(id);
-        } catch (NotFoundException e) {
-            //log
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(person, HttpStatus.OK);
-    }
-
     @PostMapping(value = "/person", produces = "application/json")
     public ResponseEntity<Person> create(@Valid @RequestBody Person person) {
         ValidationUtil.checkNew(person);
@@ -48,31 +30,6 @@ public class PersonController {
                 .path("/{id}")
                 .buildAndExpand(created.getId()).toUri();
         return ResponseEntity.created(uriOfNewResource).body(created);
-    }
-
-    @PutMapping(value = "/person/{id}", produces = "application/json")
-    public ResponseEntity<Person> updateById(@Valid @RequestBody Person person,
-                                             @PathVariable("id") Integer id) {
-        ValidationUtil.assureIdConsistent(person, id);
-        Person personUpdated;
-        try {
-            personUpdated = personService.updateById(person, id);
-        } catch (NotFoundException e) {
-            //log
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<Person>(personUpdated, HttpStatus.OK);
-    }
-
-    @DeleteMapping("/person/{id}")
-    public ResponseEntity<Person> deleteById(@PathVariable("id") Integer id) {
-        try {
-            personService.deleteById(id);
-        } catch (NotFoundException e) {
-            //log
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/person")
@@ -99,6 +56,18 @@ public class PersonController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<Person>(personUpdated, HttpStatus.OK);
+    }
+
+    @GetMapping("/person/address")
+    public ResponseEntity<List<Person>> getByAddress(@RequestParam String address) {
+        List<Person> personList;
+        try {
+            personList = personService.getByAdress(address);
+        } catch (NotFoundException e) {
+            //log
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<List<Person>>(personList, HttpStatus.OK);
     }
 
 }

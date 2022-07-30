@@ -1,5 +1,6 @@
 package com.safetynet.safetynetsystem.model;
 
+import com.safetynet.safetynetsystem.dto.PersonShortData;
 import lombok.*;
 
 import javax.persistence.Entity;
@@ -37,5 +38,9 @@ public class Person extends AbstractBaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(firstName, lastName, address, city, zip, phone, email);
+    }
+
+    public PersonShortData getShortData() {
+        return new PersonShortData(firstName, lastName, address, phone);
     }
 }

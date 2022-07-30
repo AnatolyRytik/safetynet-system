@@ -2,6 +2,7 @@ package com.safetynet.safetynetsystem.service;
 
 import com.safetynet.safetynetsystem.model.FireStation;
 import com.safetynet.safetynetsystem.repository.FireStationRepository;
+import com.safetynet.safetynetsystem.repository.PersonRepository;
 import com.safetynet.safetynetsystem.util.error.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -14,7 +15,7 @@ import static com.safetynet.safetynetsystem.util.ValidationUtil.checkNotFoundWit
 public class FireStationService {
     private final FireStationRepository firestationRepository;
 
-    public FireStationService(FireStationRepository firestationRepository) {
+    public FireStationService(FireStationRepository firestationRepository, PersonRepository personRepository) {
         this.firestationRepository = firestationRepository;
     }
 
@@ -43,4 +44,5 @@ public class FireStationService {
         checkNotFoundWithId(firestationRepository.findById(id), id);
         firestationRepository.deleteById(id);
     }
+
 }

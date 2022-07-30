@@ -22,6 +22,7 @@ public abstract class AbstractBaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     protected Integer id;
 
     // doesn't work for hibernate lazy proxy

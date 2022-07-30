@@ -58,4 +58,9 @@ public class PersonService {
         personRepository.delete(person);
     }
 
+    public List<Person> getByAdress(String address) {
+        List<Person> personList = personRepository.findByAddress(address).orElseThrow(() -> new NotFoundException(
+                ("Person not found")));
+        return personList;
+    }
 }
