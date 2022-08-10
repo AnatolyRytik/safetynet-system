@@ -9,7 +9,7 @@ import java.util.List;
 @Setter
 public class StationCoverageDTO {
 
-    private List<PersonShortData> personList;
+    private List<PersonShortDataDTO> personList;
     private int adultQuantity;
     private int kidsQuantity;
 }

@@ -3,7 +3,7 @@ package com.safetynet.safetynetsystem.dto;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class PersonShortData {
+public class PersonShortDataDTO {
 
     private String firstName;
     private String lastName;

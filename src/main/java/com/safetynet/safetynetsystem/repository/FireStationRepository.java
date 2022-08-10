@@ -8,4 +8,6 @@ import java.util.Optional;
 
 public interface FireStationRepository extends JpaRepository<FireStation, Integer> {
     Optional<List<FireStation>> findByStation(String station);
+
+    Optional<FireStation> findByAddress(String address);
 }

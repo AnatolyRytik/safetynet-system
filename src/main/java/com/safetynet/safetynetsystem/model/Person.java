@@ -1,6 +1,6 @@
 package com.safetynet.safetynetsystem.model;
 
-import com.safetynet.safetynetsystem.dto.PersonShortData;
+import com.safetynet.safetynetsystem.dto.PersonShortDataDTO;
 import lombok.*;
 
 import javax.persistence.Entity;
@@ -40,7 +40,7 @@ public class Person extends AbstractBaseEntity {
         return Objects.hash(firstName, lastName, address, city, zip, phone, email);
     }
 
-    public PersonShortData getShortData() {
-        return new PersonShortData(firstName, lastName, address, phone);
+    public PersonShortDataDTO getShortData() {
+        return new PersonShortDataDTO(firstName, lastName, address, phone);
     }
 }

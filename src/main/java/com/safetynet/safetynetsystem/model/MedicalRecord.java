@@ -41,4 +41,6 @@ public class MedicalRecord extends AbstractBaseEntity {
     public int hashCode() {
         return Objects.hash(firstName, lastName, birthdate, medications, allergies);
     }
+
+
 }

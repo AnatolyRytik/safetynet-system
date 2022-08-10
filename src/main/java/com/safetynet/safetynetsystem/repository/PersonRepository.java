@@ -11,4 +11,6 @@ public interface PersonRepository extends JpaRepository<Person, Integer> {
     Optional<Person> findByFirstNameAndLastName(String firstName, String lastName);
 
     Optional<List<Person>> findByAddress(String address);
+
+    Optional<List<Person>> findByLastName(String lastName);
 }
