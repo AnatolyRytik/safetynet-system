@@ -62,4 +62,10 @@ public class SafetyNetController {
         }
         return new ResponseEntity<>(personUpdated, HttpStatus.OK);
     }
+
+    @GetMapping(value = "/communityEmail", produces = "application/json")
+    public ResponseEntity getCommunityEmail(@RequestParam String city) {
+        List<String> emailList = safetyNetService.getCommunityEmail(city);
+        return new ResponseEntity<>(emailList, HttpStatus.OK);
+    }
 }

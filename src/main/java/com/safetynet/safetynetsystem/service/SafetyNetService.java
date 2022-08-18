@@ -157,6 +157,17 @@ public class SafetyNetService {
                 age, person.getEmail(), medicalRecord.getAllergies(), medicalRecord.getMedications());
     }
 
+    public List<String> getCommunityEmail(String city) {
+        List<Person> persons = personRepository.findByCity(city)
+                .orElseThrow(() -> new NotFoundException("Person not found"));
+
+        List<String> emails = persons.stream()
+                .map(person -> person.getEmail())
+                .collect(Collectors.toList());
+
+        return emails;
+    }
+
     private int calculateAge(String firstName, String lastName) {
         MedicalRecord medicalRecord = medicalRecordRepository.findByFirstNameAndLastName(firstName, lastName).orElseThrow(() -> new NotFoundException(
                 ("Medical record by first name and last name not found")));
