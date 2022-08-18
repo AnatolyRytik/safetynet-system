@@ -2,14 +2,12 @@ package com.safetynet.safetynetsystem.controller;
 
 import com.safetynet.safetynetsystem.model.FireStation;
 import com.safetynet.safetynetsystem.service.FireStationService;
-import com.safetynet.safetynetsystem.util.ValidationUtil;
+import com.safetynet.safetynetsystem.util.error.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.net.URI;
 
 @RestController
 public class FireStationController {
@@ -22,24 +20,32 @@ public class FireStationController {
 
     @PostMapping(value = "/firestation", produces = "application/json")
     public ResponseEntity<FireStation> create(@Valid @RequestBody FireStation firestation) {
-        ValidationUtil.checkNew(firestation);
         FireStation created = firestationService.save(firestation);
-        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/{id}")
-                .buildAndExpand(created.getId()).toUri();
-        return ResponseEntity.created(uriOfNewResource).body(created);
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
-    @PutMapping(value = "/firestation/{id}", produces = "application/json")
-    public ResponseEntity<FireStation> updateById(@Valid @RequestBody FireStation firestation,
-                                                  @PathVariable("id") Integer id) {
-        ValidationUtil.assureIdConsistent(firestation, id);
-        return new ResponseEntity<>(firestationService.update(firestation, id), HttpStatus.OK);
+    @PutMapping(value = "/firestation", produces = "application/json")
+    public ResponseEntity update(@Valid @RequestBody FireStation firestation) {
+        FireStation fireStationUpdated;
+        try {
+            fireStationUpdated = firestationService.update(firestation);
+        } catch (NotFoundException e) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("FireStation not found");
+        }
+        return new ResponseEntity<>(fireStationUpdated, HttpStatus.OK);
     }
 
-    @DeleteMapping("/firestation/{id}")
-    public ResponseEntity<FireStation> deleteById(@PathVariable("id") Integer id) {
-        firestationService.deleteById(id);
+    @DeleteMapping("/firestation")
+    public ResponseEntity delete(@Valid @RequestBody FireStation firestation) {
+        try {
+            firestationService.delete(firestation);
+        } catch (NotFoundException e) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("FireStation not found");
+        }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

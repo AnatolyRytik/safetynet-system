@@ -1,10 +1,15 @@
 package com.safetynet.safetynetsystem.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -13,21 +18,23 @@ import java.util.Objects;
 @Setter
 @ToString
 @RequiredArgsConstructor
-@AllArgsConstructor
 @Entity
 public class MedicalRecord extends AbstractBaseEntity {
 
-    String firstName;
-    String lastName;
-
     @JsonFormat(pattern = "MM/dd/yyyy")
     Date birthdate;
-
     @ElementCollection
     List<String> medications;
-
     @ElementCollection
     List<String> allergies;
+
+    @NotBlank
+    @NaturalId
+    private String firstName;
+
+    @NotBlank
+    @NaturalId
+    private String lastName;
 
     @Override
     public boolean equals(Object o) {

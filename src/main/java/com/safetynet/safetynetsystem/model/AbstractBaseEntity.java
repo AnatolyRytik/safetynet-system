@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.util.ProxyUtils;
-import org.springframework.util.Assert;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,12 +23,6 @@ public abstract class AbstractBaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
     protected Integer id;
-
-    // doesn't work for hibernate lazy proxy
-    public int id() {
-        Assert.notNull(id, "Entity must have id");
-        return id;
-    }
 
     @JsonIgnore
     public boolean isNew() {

@@ -7,10 +7,6 @@ import com.safetynet.safetynetsystem.util.error.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.util.List;
-
-import static com.safetynet.safetynetsystem.util.ValidationUtil.checkNotFoundWithId;
-
 @Service
 public class FireStationService {
     private final FireStationRepository firestationRepository;
@@ -24,25 +20,18 @@ public class FireStationService {
         return firestationRepository.save(firestation);
     }
 
-    public List<FireStation> getAll() {
-        return firestationRepository.findAll();
-    }
-
-    public FireStation getById(Integer id) {
-        return firestationRepository.findById(id).orElseThrow(() -> new NotFoundException(
-                ("Fire station not found")));
-    }
-
-    public FireStation update(FireStation firestation, Integer id) {
+    public FireStation update(FireStation firestation) {
         Assert.notNull(firestation, "Fire station must not be null");
-        firestationRepository.findById(id).orElseThrow(() -> new NotFoundException(
+        firestationRepository.findByAddress(firestation.getAddress()).orElseThrow(() -> new NotFoundException(
                 ("Fire station not found")));
         return firestationRepository.save(firestation);
     }
 
-    public void deleteById(Integer id) {
-        checkNotFoundWithId(firestationRepository.findById(id), id);
-        firestationRepository.deleteById(id);
+    public void delete(FireStation firestation) {
+        Assert.notNull(firestation, "Fire station must not be null");
+        FireStation fireStation = firestationRepository.findByAddressAndStation(firestation.getAddress(), firestation.getStation()).orElseThrow(() -> new NotFoundException(
+                ("Fire station not found")));
+        firestationRepository.delete(firestation);
     }
 
 }

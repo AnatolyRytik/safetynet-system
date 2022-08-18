@@ -1,9 +1,6 @@
 package com.safetynet.safetynetsystem.service;
 
-import com.safetynet.safetynetsystem.dto.ChildAlertDTO;
-import com.safetynet.safetynetsystem.dto.FireAlertDTO;
-import com.safetynet.safetynetsystem.dto.PersonShortDataDTO;
-import com.safetynet.safetynetsystem.dto.StationCoverageDTO;
+import com.safetynet.safetynetsystem.dto.*;
 import com.safetynet.safetynetsystem.model.FireStation;
 import com.safetynet.safetynetsystem.model.MedicalRecord;
 import com.safetynet.safetynetsystem.model.Person;
@@ -43,12 +40,9 @@ public class SafetyNetService {
             personList.addAll(newPersonList);
         }
 
-        StationCoverageDTO stationCoverageDTO = new StationCoverageDTO();
         List<PersonShortDataDTO> personShortData = personList.stream()
-                .map(Person::getShortData)
+                .map(PersonShortDataDTO::new)
                 .collect(Collectors.toList());
-
-        stationCoverageDTO.setPersonList(personShortData);
 
         int adultCount = 0;
         int childCount = 0;
@@ -60,10 +54,7 @@ public class SafetyNetService {
             } else childCount++;
         }
 
-        stationCoverageDTO.setAdultQuantity(adultCount);
-        stationCoverageDTO.setKidsQuantity(childCount);
-
-        return stationCoverageDTO;
+        return new StationCoverageDTO(personShortData, adultCount, childCount);
     }
 
     public List<ChildAlertDTO> getChildAlert(String address) {
@@ -71,15 +62,20 @@ public class SafetyNetService {
         personList = personRepository.findByAddress(address).orElseThrow(() -> new NotFoundException(
                 ("Person by address not found")));
 
-        List<ChildAlertDTO> kids = new ArrayList<>();
+        return getChildAlertList(personList);
+    }
 
+    private List<ChildAlertDTO> getChildAlertList(List<Person> personList) {
+        List<ChildAlertDTO> kids = new ArrayList<>();
         for (Person person : personList) {
             int age = calculateAge(person.getFirstName(), person.getLastName());
             if (age <= 18) {
                 List<Person> familyMember = personRepository.findByLastName(person.getLastName()).orElseThrow(() -> new NotFoundException(
                         ("Persons by last name not found")));
+
                 List<PersonShortDataDTO> familyMembers = familyMember.stream()
-                        .map(Person::getShortData)
+                        .filter(p -> !p.getFirstName().equals(person.getFirstName()))
+                        .map(PersonShortDataDTO::new)
                         .collect(Collectors.toList());
 
                 ChildAlertDTO childAlertDTO = new ChildAlertDTO(person.getFirstName(), person.getLastName(), age, familyMembers);
@@ -95,8 +91,8 @@ public class SafetyNetService {
 
         List<Person> personList = new ArrayList<>();
         for (FireStation fireStation : fireStationList) {
-            personList = personRepository.findByAddress(fireStation.getAddress()).orElseThrow(() -> new NotFoundException(
-                    ("Person by address not found")));
+            personList.addAll(personRepository.findByAddress(fireStation.getAddress()).orElseThrow(() -> new NotFoundException(
+                    ("Person by address not found"))));
         }
 
         return personList.stream()
@@ -128,6 +124,23 @@ public class SafetyNetService {
             fireAlertDTOList.add(fireAlertDTO);
         }
         return fireAlertDTOList;
+    }
+
+    public List<FloodAlertDTO> getHouseholdByFireStation(List<String> stationNumber) {
+        List<String> addressList = stationNumber.stream()
+                .map(station -> firestationRepository.findByStation(station).orElseThrow(() -> new NotFoundException(
+                        ("Fire station not found"))))
+                .flatMap(List::stream)
+                .map(FireStation::getAddress)
+                .collect(Collectors.toList());
+
+        List<FloodAlertDTO> floodAlertDTOList = new ArrayList<>();
+        for (String address : addressList) {
+            List<FireAlertDTO> personList = getPersonByAddress(address);
+            FloodAlertDTO floodAlertDTO = new FloodAlertDTO(address, personList);
+            floodAlertDTOList.add(floodAlertDTO);
+        }
+        return floodAlertDTOList;
     }
 
     private int calculateAge(String firstName, String lastName) {

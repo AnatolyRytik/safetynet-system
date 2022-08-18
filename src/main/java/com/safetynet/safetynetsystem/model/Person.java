@@ -1,20 +1,28 @@
 package com.safetynet.safetynetsystem.model;
 
-import com.safetynet.safetynetsystem.dto.PersonShortDataDTO;
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.Entity;
+import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
 @Getter
 @Setter
 @ToString
 @RequiredArgsConstructor
-@AllArgsConstructor
 @Entity
 public class Person extends AbstractBaseEntity {
 
+    @NotBlank
+    @NaturalId
     private String firstName;
+
+    @NotBlank
+    @NaturalId
     private String lastName;
     private String address;
     private String city;
@@ -22,10 +30,13 @@ public class Person extends AbstractBaseEntity {
     private String phone;
     private String email;
 
-    public Person(String firstName, String lastName) {
+    public Person(String firstName, String lastName, String address, String phone) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.address = address;
+        this.phone = phone;
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -38,9 +49,5 @@ public class Person extends AbstractBaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(firstName, lastName, address, city, zip, phone, email);
-    }
-
-    public PersonShortDataDTO getShortData() {
-        return new PersonShortDataDTO(firstName, lastName, address, phone);
     }
 }

@@ -2,6 +2,7 @@ package com.safetynet.safetynetsystem.controller;
 
 import com.safetynet.safetynetsystem.dto.ChildAlertDTO;
 import com.safetynet.safetynetsystem.dto.FireAlertDTO;
+import com.safetynet.safetynetsystem.dto.FloodAlertDTO;
 import com.safetynet.safetynetsystem.dto.StationCoverageDTO;
 import com.safetynet.safetynetsystem.service.SafetyNetService;
 import org.springframework.http.HttpStatus;
@@ -27,21 +28,27 @@ public class SafetyNetController {
     }
 
     @GetMapping(value = "/childAlert", produces = "application/json")
-    public ResponseEntity<List> getPhoneNumbersByFireStation(@RequestParam String address) {
+    public ResponseEntity getChildAlert(@RequestParam String address) {
         List<ChildAlertDTO> kids = safetyNetService.getChildAlert(address);
         return new ResponseEntity<>(kids, HttpStatus.OK);
     }
 
     @GetMapping(value = "/phoneAlert", produces = "application/json")
-    public ResponseEntity<List> getChildrenByAddress(@RequestParam String station) {
+    public ResponseEntity getPhoneAlert(@RequestParam String station) {
         List<String> phoneNumbers = safetyNetService.getPhoneNumbersByFireStation(station);
         return new ResponseEntity<>(phoneNumbers, HttpStatus.OK);
     }
 
     @GetMapping(value = "/fire", produces = "application/json")
-    public ResponseEntity<List> getPersonByAddress(@RequestParam String address) {
+    public ResponseEntity getPersonByAddress(@RequestParam String address) {
         List<FireAlertDTO> fireAlertDTOList = safetyNetService.getPersonByAddress(address);
         return new ResponseEntity<>(fireAlertDTOList, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/flood/stations", produces = "application/json")
+    public ResponseEntity getHouseholdByFireStation(@RequestParam List<String> stations) {
+        List<FloodAlertDTO> floodAlertDTOList = safetyNetService.getHouseholdByFireStation(stations);
+        return new ResponseEntity<>(floodAlertDTOList, HttpStatus.OK);
     }
 
 

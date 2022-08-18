@@ -1,12 +1,21 @@
 package com.safetynet.safetynetsystem.dto;
 
-import lombok.AllArgsConstructor;
+import com.safetynet.safetynetsystem.model.Person;
+import lombok.Getter;
 
-@AllArgsConstructor
+@Getter
 public class PersonShortDataDTO {
 
-    private String firstName;
-    private String lastName;
-    private String address;
-    private String phone;
+    private final String firstName;
+    private final String lastName;
+    private final String address;
+    private final String phone;
+
+    public PersonShortDataDTO(Person person) {
+        firstName = person.getFirstName();
+        lastName = person.getLastName();
+        address = person.getAddress();
+        phone = person.getPhone();
+    }
+
 }
