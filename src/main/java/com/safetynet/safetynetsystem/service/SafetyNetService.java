@@ -143,6 +143,20 @@ public class SafetyNetService {
         return floodAlertDTOList;
     }
 
+    public PersonInfoDTO getPersonInfo(String firstName, String lastName) {
+        Person person = personRepository.findByFirstNameAndLastName(firstName, lastName)
+                .orElseThrow(() -> new NotFoundException("Person not found"));
+
+        MedicalRecord medicalRecord = medicalRecordRepository.findByFirstNameAndLastName(firstName, lastName)
+                .orElseThrow(() -> new NotFoundException("Medical record not found"));
+
+        int age = calculateAge(firstName, lastName);
+
+        return new PersonInfoDTO(person.getFirstName(),
+                person.getLastName(), person.getAddress(),
+                age, person.getEmail(), medicalRecord.getAllergies(), medicalRecord.getMedications());
+    }
+
     private int calculateAge(String firstName, String lastName) {
         MedicalRecord medicalRecord = medicalRecordRepository.findByFirstNameAndLastName(firstName, lastName).orElseThrow(() -> new NotFoundException(
                 ("Medical record by first name and last name not found")));

@@ -1,10 +1,8 @@
 package com.safetynet.safetynetsystem.controller;
 
-import com.safetynet.safetynetsystem.dto.ChildAlertDTO;
-import com.safetynet.safetynetsystem.dto.FireAlertDTO;
-import com.safetynet.safetynetsystem.dto.FloodAlertDTO;
-import com.safetynet.safetynetsystem.dto.StationCoverageDTO;
+import com.safetynet.safetynetsystem.dto.*;
 import com.safetynet.safetynetsystem.service.SafetyNetService;
+import com.safetynet.safetynetsystem.util.error.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,5 +49,17 @@ public class SafetyNetController {
         return new ResponseEntity<>(floodAlertDTOList, HttpStatus.OK);
     }
 
-
+    @GetMapping(value = "/personInfo", produces = "application/json")
+    public ResponseEntity getPersonInfo(@RequestParam String firstName,
+                                        @RequestParam String lastName) {
+        PersonInfoDTO personUpdated;
+        try {
+            personUpdated = safetyNetService.getPersonInfo(firstName, lastName);
+        } catch (NotFoundException e) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("Person not found");
+        }
+        return new ResponseEntity<>(personUpdated, HttpStatus.OK);
+    }
 }
