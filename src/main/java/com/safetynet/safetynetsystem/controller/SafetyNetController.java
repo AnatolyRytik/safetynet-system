@@ -39,13 +39,13 @@ public class SafetyNetController {
 
     @GetMapping(value = "/fire", produces = "application/json")
     public ResponseEntity getPersonByAddress(@RequestParam String address) {
-        List<FireAlertDTO> fireAlertDTOList = safetyNetService.getPersonByAddress(address);
+        List<FireResponseDTO> fireAlertDTOList = safetyNetService.getPersonByAddress(address);
         return new ResponseEntity<>(fireAlertDTOList, HttpStatus.OK);
     }
 
     @GetMapping(value = "/flood/stations", produces = "application/json")
     public ResponseEntity getHouseholdByFireStation(@RequestParam List<String> stations) {
-        List<FloodAlertDTO> floodAlertDTOList = safetyNetService.getHouseholdByFireStation(stations);
+        List<FloodResponseDTO> floodAlertDTOList = safetyNetService.getHouseholdByFireStation(stations);
         return new ResponseEntity<>(floodAlertDTOList, HttpStatus.OK);
     }
 

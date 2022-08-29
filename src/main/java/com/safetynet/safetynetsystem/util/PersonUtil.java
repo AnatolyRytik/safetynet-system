@@ -14,7 +14,7 @@ public class PersonUtil {
         return Period.between(birthDateLocal, currentDate).getYears();
     }
 
-    public static LocalDate convertToLocalDateViaInstant(Date dateToConvert) {
+    private static LocalDate convertToLocalDateViaInstant(Date dateToConvert) {
         return dateToConvert.toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate();

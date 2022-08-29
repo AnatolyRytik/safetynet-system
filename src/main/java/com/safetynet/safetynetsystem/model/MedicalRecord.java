@@ -1,10 +1,7 @@
 package com.safetynet.safetynetsystem.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.ElementCollection;
@@ -17,6 +14,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
+@AllArgsConstructor
 @RequiredArgsConstructor
 @Entity
 public class MedicalRecord extends AbstractBaseEntity {
@@ -27,11 +25,9 @@ public class MedicalRecord extends AbstractBaseEntity {
     List<String> medications;
     @ElementCollection
     List<String> allergies;
-
     @NotBlank
     @NaturalId
     private String firstName;
-
     @NotBlank
     @NaturalId
     private String lastName;
@@ -46,7 +42,7 @@ public class MedicalRecord extends AbstractBaseEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(firstName, lastName, birthdate, medications, allergies);
+        return Objects.hash(birthdate, medications, allergies, firstName, lastName);
     }
 
 

@@ -28,19 +28,19 @@ public class SafetyNetService {
     }
 
     public StationCoverageDTO getPersonByStationNumber(String station) {
-        List<FireStation> fireStationList = firestationRepository.findByStation(station).orElseThrow(() -> new NotFoundException(
-                ("Fire station not found by station number")));
+        List<FireStation> fireStationList = firestationRepository.findByStation(station)
+                .orElseThrow(() -> new NotFoundException(("Fire station not found by station number")));
 
         List<Person> personList = new ArrayList<>();
 
         for (FireStation fireStation : fireStationList) {
             List<Person> newPersonList;
-            newPersonList = personRepository.findByAddress(fireStation.getAddress()).orElseThrow(() -> new NotFoundException(
-                    ("Person by address not found")));
+            newPersonList = personRepository.findByAddress(fireStation.getAddress())
+                    .orElseThrow(() -> new NotFoundException(("Person by address not found")));
             personList.addAll(newPersonList);
         }
 
-        List<PersonShortDataDTO> personShortData = personList.stream()
+        ArrayList<PersonShortDataDTO> personShortData = (ArrayList<PersonShortDataDTO>) personList.stream()
                 .map(PersonShortDataDTO::new)
                 .collect(Collectors.toList());
 
@@ -59,8 +59,8 @@ public class SafetyNetService {
 
     public List<ChildAlertDTO> getChildAlert(String address) {
         List<Person> personList;
-        personList = personRepository.findByAddress(address).orElseThrow(() -> new NotFoundException(
-                ("Person by address not found")));
+        personList = personRepository.findByAddress(address)
+                .orElseThrow(() -> new NotFoundException(("Person by address not found")));
 
         return getChildAlertList(personList);
     }
@@ -70,8 +70,8 @@ public class SafetyNetService {
         for (Person person : personList) {
             int age = calculateAge(person.getFirstName(), person.getLastName());
             if (age <= 18) {
-                List<Person> familyMember = personRepository.findByLastName(person.getLastName()).orElseThrow(() -> new NotFoundException(
-                        ("Persons by last name not found")));
+                List<Person> familyMember = personRepository.findByLastName(person.getLastName())
+                        .orElseThrow(() -> new NotFoundException(("Persons by last name not found")));
 
                 List<PersonShortDataDTO> familyMembers = familyMember.stream()
                         .filter(p -> !p.getFirstName().equals(person.getFirstName()))
@@ -85,14 +85,14 @@ public class SafetyNetService {
         return kids;
     }
 
-    public List<String> getPhoneNumbersByFireStation(String station) {
-        List<FireStation> fireStationList = firestationRepository.findByStation(station).orElseThrow(() -> new NotFoundException(
-                ("Fire station not found by station number")));
+    public List<String> getPhoneNumbersByFireStation(String station) throws RuntimeException {
+        List<FireStation> fireStationList = firestationRepository.findByStation(station)
+                .orElseThrow(() -> new NotFoundException(("Fire station not found by station number")));
 
         List<Person> personList = new ArrayList<>();
         for (FireStation fireStation : fireStationList) {
-            personList.addAll(personRepository.findByAddress(fireStation.getAddress()).orElseThrow(() -> new NotFoundException(
-                    ("Person by address not found"))));
+            personList.addAll(personRepository.findByAddress(fireStation.getAddress())
+                    .orElseThrow(() -> new NotFoundException(("Person by address not found"))));
         }
 
         return personList.stream()
@@ -100,19 +100,19 @@ public class SafetyNetService {
                 .collect(Collectors.toList());
     }
 
-    public List<FireAlertDTO> getPersonByAddress(String address) {
-        List<Person> personList = personRepository.findByAddress(address).orElseThrow(() -> new NotFoundException(
-                ("Person by address not found")));
-        FireStation fireStation = firestationRepository.findByAddress(address).orElseThrow(() -> new NotFoundException(
-                ("FireStation by address not found")));
-        List<FireAlertDTO> fireAlertDTOList = new ArrayList<>();
+    public List<FireResponseDTO> getPersonByAddress(String address) {
+        List<Person> personList = personRepository.findByAddress(address)
+                .orElseThrow(() -> new NotFoundException(("Person by address not found")));
+        FireStation fireStation = firestationRepository.findByAddress(address)
+                .orElseThrow(() -> new NotFoundException(("FireStation by address not found")));
+        List<FireResponseDTO> fireAlerts = new ArrayList<>();
         for (Person person : personList) {
-            MedicalRecord medicalRecord = medicalRecordRepository.findByFirstNameAndLastName(person.getFirstName(), person.getLastName()).orElseThrow(() -> new NotFoundException(
-                    ("Medical records by firstName and lastName not found")));
+            MedicalRecord medicalRecord = medicalRecordRepository.findByFirstNameAndLastName(person.getFirstName(), person.getLastName())
+                    .orElseThrow(() -> new NotFoundException(("Medical records by firstName and lastName not found")));
 
             int age = PersonUtil.calculateAge(medicalRecord.getBirthdate());
 
-            FireAlertDTO fireAlertDTO = new FireAlertDTO(
+            FireResponseDTO fireAlertDTO = new FireResponseDTO(
                     person.getFirstName(),
                     person.getLastName(),
                     person.getPhone(),
@@ -121,26 +121,51 @@ public class SafetyNetService {
                     medicalRecord.getMedications(),
                     medicalRecord.getAllergies());
 
-            fireAlertDTOList.add(fireAlertDTO);
+            fireAlerts.add(fireAlertDTO);
         }
-        return fireAlertDTOList;
+        return fireAlerts;
     }
 
-    public List<FloodAlertDTO> getHouseholdByFireStation(List<String> stationNumber) {
-        List<String> addressList = stationNumber.stream()
-                .map(station -> firestationRepository.findByStation(station).orElseThrow(() -> new NotFoundException(
-                        ("Fire station not found"))))
+    public List<FloodResponseDTO> getHouseholdByFireStation(List<String> stationNumber) {
+        List<String> fireStationAddresses = getFireStationsAddresses(stationNumber);
+
+        List<FloodResponseDTO> household = new ArrayList<>();
+
+        for (String address : fireStationAddresses) {
+            List<Person> personList = personRepository.findByAddress(address)
+                    .orElseThrow(() -> new NotFoundException(("Person by address not found")));
+            FireStation fireStation = firestationRepository.findByAddress(address)
+                    .orElseThrow(() -> new NotFoundException(("FireStation by address not found")));
+
+            for (Person person : personList) {
+                MedicalRecord medicalRecord = medicalRecordRepository.findByFirstNameAndLastName(person.getFirstName(), person.getLastName())
+                        .orElseThrow(() -> new NotFoundException(("Medical records by firstName and lastName not found")));
+
+                int age = PersonUtil.calculateAge(medicalRecord.getBirthdate());
+
+                FloodResponseDTO floodResponseDTO = new FloodResponseDTO(
+                        address,
+                        person.getFirstName(),
+                        person.getLastName(),
+                        person.getPhone(),
+                        age,
+                        fireStation.getStation(),
+                        medicalRecord.getMedications(),
+                        medicalRecord.getAllergies());
+
+                household.add(floodResponseDTO);
+            }
+        }
+        return household;
+    }
+
+    private List<String> getFireStationsAddresses(List<String> stationNumber) {
+        return stationNumber.stream()
+                .map(station -> firestationRepository.findByStation(station)
+                        .orElseThrow(() -> new NotFoundException(("Fire station not found"))))
                 .flatMap(List::stream)
                 .map(FireStation::getAddress)
                 .collect(Collectors.toList());
-
-        List<FloodAlertDTO> floodAlertDTOList = new ArrayList<>();
-        for (String address : addressList) {
-            List<FireAlertDTO> personList = getPersonByAddress(address);
-            FloodAlertDTO floodAlertDTO = new FloodAlertDTO(address, personList);
-            floodAlertDTOList.add(floodAlertDTO);
-        }
-        return floodAlertDTOList;
     }
 
     public PersonInfoDTO getPersonInfo(String firstName, String lastName) {
@@ -161,16 +186,14 @@ public class SafetyNetService {
         List<Person> persons = personRepository.findByCity(city)
                 .orElseThrow(() -> new NotFoundException("Person not found"));
 
-        List<String> emails = persons.stream()
-                .map(person -> person.getEmail())
+        return persons.stream()
+                .map(Person::getEmail)
                 .collect(Collectors.toList());
-
-        return emails;
     }
 
     private int calculateAge(String firstName, String lastName) {
-        MedicalRecord medicalRecord = medicalRecordRepository.findByFirstNameAndLastName(firstName, lastName).orElseThrow(() -> new NotFoundException(
-                ("Medical record by first name and last name not found")));
+        MedicalRecord medicalRecord = medicalRecordRepository.findByFirstNameAndLastName(firstName, lastName)
+                .orElseThrow(() -> new NotFoundException(("Medical record by first name and last name not found")));
         return PersonUtil.calculateAge(medicalRecord.getBirthdate());
     }
 }

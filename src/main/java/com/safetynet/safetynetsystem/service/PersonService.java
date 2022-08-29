@@ -28,9 +28,9 @@ public class PersonService {
         return personRepository.save(person);
     }
 
-    public void deleteByFirstNameAndLastName(String firstName, String lastName) {
-        Person person = personRepository.findByFirstNameAndLastName(firstName, lastName).orElseThrow(() -> new NotFoundException(
-                ("Person not found")));
+    public void deleteByFirstNameAndLastName(String firstName, String lastName) throws RuntimeException {
+        Person person = personRepository.findByFirstNameAndLastName(firstName, lastName)
+                .orElseThrow(() -> new NotFoundException(("Person not found")));
         personRepository.delete(person);
     }
 }

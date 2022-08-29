@@ -1,22 +1,23 @@
 package com.safetynet.safetynetsystem.model;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.Entity;
+import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
 @Getter
 @Setter
 @ToString
+@AllArgsConstructor
 @RequiredArgsConstructor
 @Entity
 public class FireStation extends AbstractBaseEntity {
 
+    @NotBlank
     private String station;
+    @NotBlank
     private String address;
 
     @Override
