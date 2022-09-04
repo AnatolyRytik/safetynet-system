@@ -3,8 +3,8 @@ package com.safetynet.safetynetsystem.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @AllArgsConstructor
 @Getter
@@ -15,14 +15,13 @@ public class PersonInfoDTO {
     private String address;
     private int age;
     private String email;
-    private List<String> medications;
-    private List<String> allergies;
+    private Set<String> medications;
+    private Set<String> allergies;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof PersonInfoDTO)) return false;
-        PersonInfoDTO that = (PersonInfoDTO) o;
+        if (!(o instanceof PersonInfoDTO that)) return false;
         return age == that.age && Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(address, that.address) && Objects.equals(email, that.email) && Objects.equals(medications, that.medications) && Objects.equals(allergies, that.allergies);
     }
 

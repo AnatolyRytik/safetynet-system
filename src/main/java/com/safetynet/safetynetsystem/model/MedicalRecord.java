@@ -6,10 +6,11 @@ import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -21,10 +22,10 @@ public class MedicalRecord extends AbstractBaseEntity {
 
     @JsonFormat(pattern = "MM/dd/yyyy")
     Date birthdate;
-    @ElementCollection
-    List<String> medications;
-    @ElementCollection
-    List<String> allergies;
+    @ElementCollection(fetch = FetchType.EAGER)
+    Set<String> medications;
+    @ElementCollection(fetch = FetchType.EAGER)
+    Set<String> allergies;
     @NotBlank
     @NaturalId
     private String firstName;
@@ -35,8 +36,7 @@ public class MedicalRecord extends AbstractBaseEntity {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof MedicalRecord)) return false;
-        MedicalRecord that = (MedicalRecord) o;
+        if (!(o instanceof MedicalRecord that)) return false;
         return Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(birthdate, that.birthdate) && Objects.equals(medications, that.medications) && Objects.equals(allergies, that.allergies);
     }
 
