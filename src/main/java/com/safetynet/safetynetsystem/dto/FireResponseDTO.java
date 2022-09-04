@@ -14,7 +14,7 @@ public class FireResponseDTO {
     private String lastName;
     private String phone;
     private int age;
-    private String station;
+    private Set<String> station;
     private Set<String> medications;
     private Set<String> allergies;
 

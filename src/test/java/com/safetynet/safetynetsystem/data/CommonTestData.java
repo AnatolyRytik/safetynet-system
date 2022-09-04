@@ -80,10 +80,10 @@ public class CommonTestData {
 
     public static List<FireResponseDTO> getPersonByAddress() {
         List<FireResponseDTO> fireResponse = new ArrayList<>();
-        fireResponse.add(new FireResponseDTO("Sophia", "Zemicks", "841-874-7878", 34, "2", Set.of("aznol:60mg",
+        fireResponse.add(new FireResponseDTO("Sophia", "Zemicks", "841-874-7878", 34, Set.of("2"), Set.of("aznol:60mg",
                 "hydrapermazol:900mg", "pharmacol:5000mg", "terazine:500mg"), Set.of("peanut", "shellfish", "aznol")));
-        fireResponse.add(new FireResponseDTO("Warren", "Zemicks", "841-874-7512", 37, "2", Collections.emptySet(), Collections.emptySet()));
-        fireResponse.add(new FireResponseDTO("Zach", "Zemicks", "841-874-7512", 5, "2", Collections.emptySet(), Collections.emptySet()));
+        fireResponse.add(new FireResponseDTO("Warren", "Zemicks", "841-874-7512", 37, Set.of("2"), Collections.emptySet(), Collections.emptySet()));
+        fireResponse.add(new FireResponseDTO("Zach", "Zemicks", "841-874-7512", 5, Set.of("2"), Collections.emptySet(), Collections.emptySet()));
         return fireResponse;
     }
 }

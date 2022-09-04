@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -103,7 +104,7 @@ public class SafetyNetService {
     public List<FireResponseDTO> getPersonByAddress(String address) {
         List<Person> personList = personRepository.findByAddress(address)
                 .orElseThrow(() -> new NotFoundException(("Person by address not found")));
-        FireStation fireStation = firestationRepository.findByAddress(address)
+        List<FireStation> fireStation = firestationRepository.findByAddress(address)
                 .orElseThrow(() -> new NotFoundException(("FireStation by address not found")));
         List<FireResponseDTO> fireAlerts = new ArrayList<>();
         for (Person person : personList) {
@@ -117,7 +118,9 @@ public class SafetyNetService {
                     person.getLastName(),
                     person.getPhone(),
                     age,
-                    fireStation.getStation(),
+                    fireStation.stream()
+                            .map(FireStation::getStation)
+                            .collect(Collectors.toSet()),
                     medicalRecord.getMedications(),
                     medicalRecord.getAllergies());
 
@@ -127,14 +130,13 @@ public class SafetyNetService {
     }
 
     public List<FloodResponseDTO> getHouseholdByFireStation(List<String> stationNumber) {
-        List<String> fireStationAddresses = getFireStationsAddresses(stationNumber);
-
+        Set<String> fireStationAddresses = getFireStationsAddresses(stationNumber);
         List<FloodResponseDTO> household = new ArrayList<>();
 
         for (String address : fireStationAddresses) {
             List<Person> personList = personRepository.findByAddress(address)
                     .orElseThrow(() -> new NotFoundException(("Person by address not found")));
-            FireStation fireStation = firestationRepository.findByAddress(address)
+            List<FireStation> fireStation = firestationRepository.findByAddress(address)
                     .orElseThrow(() -> new NotFoundException(("FireStation by address not found")));
 
             for (Person person : personList) {
@@ -149,7 +151,9 @@ public class SafetyNetService {
                         person.getLastName(),
                         person.getPhone(),
                         age,
-                        fireStation.getStation(),
+                        fireStation.stream()
+                                .map(FireStation::getStation)
+                                .collect(Collectors.toSet()),
                         medicalRecord.getMedications(),
                         medicalRecord.getAllergies());
 
@@ -159,13 +163,17 @@ public class SafetyNetService {
         return household;
     }
 
-    private List<String> getFireStationsAddresses(List<String> stationNumber) {
-        return stationNumber.stream()
-                .map(station -> firestationRepository.findByStation(station)
-                        .orElseThrow(() -> new NotFoundException(("Fire station not found"))))
-                .flatMap(List::stream)
+    private Set<String> getFireStationsAddresses(List<String> stationNumbers) {
+        List<FireStation> fireStations = new ArrayList<>();
+        for (String stationNumber : stationNumbers) {
+            List<FireStation> fireStation = firestationRepository.findByStation(stationNumber)
+                    .orElseThrow(() -> new NotFoundException(("FireStations by firstName and lastName not found")));
+            fireStations.addAll(fireStation);
+        }
+
+        return fireStations.stream()
                 .map(FireStation::getAddress)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
     public PersonInfoDTO getPersonInfo(String firstName, String lastName) {
