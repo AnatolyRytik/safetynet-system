@@ -35,7 +35,7 @@ public class CommonTestData {
     }
 
     public static FireStation getFireStationToUpdate() {
-        return new FireStation("4", "947 E. Rose Dr");
+        return new FireStation("6", "947 E. Rose Dr");
     }
 
     public static MedicalRecord getEmptyMedicalRecord() {
