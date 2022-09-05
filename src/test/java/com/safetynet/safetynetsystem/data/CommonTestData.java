@@ -1,9 +1,6 @@
 package com.safetynet.safetynetsystem.data;
 
-import com.safetynet.safetynetsystem.dto.ChildAlertDTO;
-import com.safetynet.safetynetsystem.dto.FireResponseDTO;
-import com.safetynet.safetynetsystem.dto.PersonShortDataDTO;
-import com.safetynet.safetynetsystem.dto.StationCoverageDTO;
+import com.safetynet.safetynetsystem.dto.*;
 import com.safetynet.safetynetsystem.model.FireStation;
 import com.safetynet.safetynetsystem.model.MedicalRecord;
 import com.safetynet.safetynetsystem.model.Person;
@@ -85,5 +82,20 @@ public class CommonTestData {
         fireResponse.add(new FireResponseDTO("Warren", "Zemicks", "841-874-7512", 37, Set.of("2"), Collections.emptySet(), Collections.emptySet()));
         fireResponse.add(new FireResponseDTO("Zach", "Zemicks", "841-874-7512", 5, Set.of("2"), Collections.emptySet(), Collections.emptySet()));
         return fireResponse;
+    }
+
+    public static List<FloodResponseDTO> getHouseholdByFireStation() {
+        List<FloodResponseDTO> floodResponse = new ArrayList<>();
+        floodResponse.add(new FloodResponseDTO("951 LoneTree Rd", "Eric", "Cadigan", "841-874-7458", 77, Set.of("2"), Set.of("tradoxidine:400mg"), Collections.emptySet()));
+        floodResponse.add(new FloodResponseDTO("892 Downing Ct", "Sophia", "Zemicks", "841-874-7878", 34, Set.of("2"), Set.of("aznol:60mg",
+                "hydrapermazol:900mg", "pharmacol:5000mg", "terazine:500mg"), Set.of("peanut", "shellfish", "aznol")));
+        floodResponse.add(new FloodResponseDTO("892 Downing Ct", "Warren", "Zemicks", "841-874-7512", 37, Set.of("2"), Collections.emptySet(), Collections.emptySet()));
+        floodResponse.add(new FloodResponseDTO("892 Downing Ct", "Zach", "Zemicks", "841-874-7512", 5, Set.of("2"), Collections.emptySet(), Collections.emptySet()));
+        floodResponse.add(new FloodResponseDTO("29 15th St", "Jonanathan", "Marrack", "841-874-6513", 33, Set.of("2"), Collections.emptySet(), Collections.emptySet()));
+        return floodResponse;
+    }
+
+    public static PersonInfoDTO getPersonInfo() {
+        return new PersonInfoDTO("Eric", "Cadigan", "951 LoneTree Rd", 77, "gramps@email.com", Collections.emptySet(), Set.of("tradoxidine:400mg"));
     }
 }
