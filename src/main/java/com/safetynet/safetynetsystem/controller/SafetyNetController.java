@@ -20,32 +20,67 @@ public class SafetyNetController {
     }
 
     @GetMapping(value = "/firestation", produces = "application/json")
-    public ResponseEntity<StationCoverageDTO> getPersonsByStationNumber(@RequestParam String stationNumber) {
-        StationCoverageDTO stationCoverageDTO = safetyNetService.getPersonByStationNumber(stationNumber);
+    public ResponseEntity getPersonsByStationNumber(@RequestParam String stationNumber) {
+        StationCoverageDTO stationCoverageDTO;
+        try {
+            stationCoverageDTO = safetyNetService.getPersonByStationNumber(stationNumber);
+        } catch (NotFoundException e) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("Station not found");
+        }
         return new ResponseEntity<>(stationCoverageDTO, HttpStatus.OK);
     }
 
     @GetMapping(value = "/childAlert", produces = "application/json")
     public ResponseEntity getChildAlert(@RequestParam String address) {
-        List<ChildAlertDTO> kids = safetyNetService.getChildAlert(address);
+        List<ChildAlertDTO> kids;
+        try {
+            kids = safetyNetService.getChildAlert(address);
+        } catch (NotFoundException e) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("Address not found");
+        }
         return new ResponseEntity<>(kids, HttpStatus.OK);
     }
 
     @GetMapping(value = "/phoneAlert", produces = "application/json")
     public ResponseEntity getPhoneAlert(@RequestParam String station) {
-        List<String> phoneNumbers = safetyNetService.getPhoneNumbersByFireStation(station);
+        List<String> phoneNumbers;
+        try {
+            phoneNumbers = safetyNetService.getPhoneNumbersByFireStation(station);
+        } catch (NotFoundException e) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("Station not found");
+        }
         return new ResponseEntity<>(phoneNumbers, HttpStatus.OK);
     }
 
     @GetMapping(value = "/fire", produces = "application/json")
     public ResponseEntity getPersonByAddress(@RequestParam String address) {
-        List<FireResponseDTO> fireAlertDTOList = safetyNetService.getPersonByAddress(address);
+        List<FireResponseDTO> fireAlertDTOList;
+        try {
+            fireAlertDTOList = safetyNetService.getPersonByAddress(address);
+        } catch (NotFoundException e) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("Address not found");
+        }
         return new ResponseEntity<>(fireAlertDTOList, HttpStatus.OK);
     }
 
     @GetMapping(value = "/flood/stations", produces = "application/json")
     public ResponseEntity getHouseholdByFireStation(@RequestParam List<String> stations) {
-        List<FloodResponseDTO> floodAlertDTOList = safetyNetService.getHouseholdByFireStation(stations);
+        List<FloodResponseDTO> floodAlertDTOList;
+        try {
+            floodAlertDTOList = safetyNetService.getHouseholdByFireStation(stations);
+        } catch (NotFoundException e) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("Station not found");
+        }
         return new ResponseEntity<>(floodAlertDTOList, HttpStatus.OK);
     }
 
@@ -65,7 +100,14 @@ public class SafetyNetController {
 
     @GetMapping(value = "/communityEmail", produces = "application/json")
     public ResponseEntity getCommunityEmail(@RequestParam String city) {
-        List<String> emailList = safetyNetService.getCommunityEmail(city);
+        List<String> emailList;
+        try {
+            emailList = safetyNetService.getCommunityEmail(city);
+        } catch (NotFoundException e) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("City not found");
+        }
         return new ResponseEntity<>(emailList, HttpStatus.OK);
     }
 }

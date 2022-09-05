@@ -22,8 +22,9 @@ public class FireStationService {
 
     public FireStation update(FireStation firestation) {
         Assert.notNull(firestation, "Fire station must not be null");
-        firestationRepository.findByAddress(firestation.getAddress()).orElseThrow(() -> new NotFoundException(
-                ("Fire station not found")));
+        if (firestationRepository.findByAddress(firestation.getAddress()).isEmpty()) {
+            throw new NotFoundException(("Fire stations not found by station number"));
+        }
         return firestationRepository.save(firestation);
     }
 

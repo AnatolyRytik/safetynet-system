@@ -31,26 +31,26 @@ public class SafetyNetService {
 
     public StationCoverageDTO getPersonByStationNumber(String station) throws RuntimeException {
         Assert.notNull(station, "Fire station number must not be null");
-        List<FireStation> fireStationList = firestationRepository.findByStation(station)
-                .orElseThrow(() -> new NotFoundException(("Fire station not found by station number")));
-
-        List<Person> personList = new ArrayList<>();
-
-        for (FireStation fireStation : fireStationList) {
-            List<Person> newPersonList;
-            newPersonList = personRepository.findByAddress(fireStation.getAddress())
-                    .orElseThrow(() -> new NotFoundException(("Person by address not found")));
-            personList.addAll(newPersonList);
+        List<FireStation> fireStationList = firestationRepository.findByStation(station);
+        if (fireStationList.isEmpty()) {
+            throw new NotFoundException(("Fire stations not found by station number"));
         }
 
-        ArrayList<PersonShortDataDTO> personShortData = (ArrayList<PersonShortDataDTO>) personList.stream()
+        List<Person> persons = new ArrayList<>();
+
+        for (FireStation fireStation : fireStationList) {
+            List<Person> newPersonList = personRepository.findByAddress(fireStation.getAddress());
+            persons.addAll(newPersonList);
+        }
+
+        ArrayList<PersonShortDataDTO> personShortData = (ArrayList<PersonShortDataDTO>) persons.stream()
                 .map(PersonShortDataDTO::new)
                 .collect(Collectors.toList());
 
         int adultCount = 0;
         int childCount = 0;
 
-        for (Person person : personList) {
+        for (Person person : persons) {
             int age = calculateAge(person.getFirstName(), person.getLastName());
             if (age >= 18) {
                 adultCount++;
@@ -62,20 +62,19 @@ public class SafetyNetService {
 
     public List<ChildAlertDTO> getChildAlert(String address) throws RuntimeException {
         Assert.notNull(address, "address station must not be null");
-        List<Person> personList;
-        personList = personRepository.findByAddress(address)
-                .orElseThrow(() -> new NotFoundException(("Person by address not found")));
-
-        return getChildAlertList(personList);
+        List<Person> persons = personRepository.findByAddress(address);
+        if (persons.isEmpty()) {
+            throw new NotFoundException("Person by address not found");
+        }
+        return getChildAlertList(persons);
     }
 
-    private List<ChildAlertDTO> getChildAlertList(List<Person> personList) throws RuntimeException {
+    private List<ChildAlertDTO> getChildAlertList(List<Person> persons) throws RuntimeException {
         List<ChildAlertDTO> kids = new ArrayList<>();
-        for (Person person : personList) {
+        for (Person person : persons) {
             int age = calculateAge(person.getFirstName(), person.getLastName());
             if (age <= 18) {
-                List<Person> familyMember = personRepository.findByLastName(person.getLastName())
-                        .orElseThrow(() -> new NotFoundException(("Persons by last name not found")));
+                List<Person> familyMember = personRepository.findByLastName(person.getLastName());
 
                 List<PersonShortDataDTO> familyMembers = familyMember.stream()
                         .filter(p -> !p.getFirstName().equals(person.getFirstName()))
@@ -91,28 +90,29 @@ public class SafetyNetService {
 
     public List<String> getPhoneNumbersByFireStation(String station) throws RuntimeException {
         Assert.notNull(station, "Station number must not be null");
-        List<FireStation> fireStationList = firestationRepository.findByStation(station)
-                .orElseThrow(() -> new NotFoundException(("Fire station not found by station number")));
-
-        List<Person> personList = new ArrayList<>();
+        List<FireStation> fireStationList = firestationRepository.findByStation(station);
+        if (fireStationList.isEmpty()) {
+            throw new NotFoundException(("Fire stations not found by station number"));
+        }
+        List<Person> persons = new ArrayList<>();
         for (FireStation fireStation : fireStationList) {
-            personList.addAll(personRepository.findByAddress(fireStation.getAddress())
-                    .orElseThrow(() -> new NotFoundException(("Persons by address not found"))));
+            persons.addAll(personRepository.findByAddress(fireStation.getAddress()));
         }
 
-        return personList.stream()
+        return persons.stream()
                 .map(Person::getPhone)
                 .collect(Collectors.toList());
     }
 
     public List<FireResponseDTO> getPersonByAddress(String address) throws RuntimeException {
         Assert.notNull(address, "address station must not be null");
-        List<Person> personList = personRepository.findByAddress(address)
-                .orElseThrow(() -> new NotFoundException(("Persons by address not found")));
-        List<FireStation> fireStation = firestationRepository.findByAddress(address)
-                .orElseThrow(() -> new NotFoundException(("FireStations by address not found")));
+        List<Person> persons = personRepository.findByAddress(address);
+        if (persons.isEmpty()) {
+            throw new NotFoundException("Person by address not found");
+        }
+        List<FireStation> fireStation = firestationRepository.findByAddress(address);
         List<FireResponseDTO> fireAlerts = new ArrayList<>();
-        for (Person person : personList) {
+        for (Person person : persons) {
             MedicalRecord medicalRecord = medicalRecordRepository.findByFirstNameAndLastName(person.getFirstName(), person.getLastName())
                     .orElseThrow(() -> new NotFoundException(("Medical records by firstName and lastName not found")));
 
@@ -140,12 +140,13 @@ public class SafetyNetService {
         List<FloodResponseDTO> household = new ArrayList<>();
 
         for (String address : fireStationAddresses) {
-            List<Person> personList = personRepository.findByAddress(address)
-                    .orElseThrow(() -> new NotFoundException(("Persons by address not found")));
-            List<FireStation> fireStation = firestationRepository.findByAddress(address)
-                    .orElseThrow(() -> new NotFoundException(("FireStations by address not found")));
+            List<Person> persons = personRepository.findByAddress(address);
+            if (persons.isEmpty()) {
+                throw new NotFoundException("Person by address not found");
+            }
+            List<FireStation> fireStation = firestationRepository.findByAddress(address);
 
-            for (Person person : personList) {
+            for (Person person : persons) {
                 MedicalRecord medicalRecord = medicalRecordRepository.findByFirstNameAndLastName(person.getFirstName(), person.getLastName())
                         .orElseThrow(() -> new NotFoundException(("Medical records by firstName and lastName not found")));
 
@@ -170,11 +171,13 @@ public class SafetyNetService {
     }
 
     private Set<String> getFireStationsAddresses(List<String> stationNumbers) throws RuntimeException {
-        Assert.notNull(stationNumbers, "stations must not be null");
         List<FireStation> fireStations = new ArrayList<>();
         for (String stationNumber : stationNumbers) {
-            fireStations.addAll(firestationRepository.findByStation(stationNumber)
-                    .orElseThrow(() -> new NotFoundException(("FireStations by firstName and lastName not found"))));
+            List<FireStation> fireStations1 = firestationRepository.findByStation(stationNumber);
+            if (fireStations1.isEmpty()) {
+                throw new NotFoundException("Fire stations not found by station number");
+            }
+            fireStations.addAll(fireStations1);
         }
 
         return fireStations.stream()
@@ -198,8 +201,10 @@ public class SafetyNetService {
 
     public List<String> getCommunityEmail(String city) throws RuntimeException {
         Assert.notNull(city, "city must not be null");
-        List<Person> persons = personRepository.findByCity(city)
-                .orElseThrow(() -> new NotFoundException("Persons not found"));
+        List<Person> persons = personRepository.findByCity(city);
+        if (persons.isEmpty()) {
+            throw new NotFoundException("Person by address not found");
+        }
 
         return persons.stream()
                 .map(Person::getEmail)

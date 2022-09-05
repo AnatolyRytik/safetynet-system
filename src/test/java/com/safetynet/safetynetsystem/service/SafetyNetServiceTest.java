@@ -36,6 +36,11 @@ class SafetyNetServiceTest {
     }
 
     @Test
+    void getPersonByStationNotExistingNumberThrowExceptionTest() {
+        assertThrows(NotFoundException.class, () -> safetyNetService.getPersonByStationNumber("8"));
+    }
+
+    @Test
     void getChildAlertTest() {
         List<ChildAlertDTO> actual = safetyNetService.getChildAlert("892 Downing Ct");
         List<ChildAlertDTO> expected = CommonTestData.getChildAlert();
@@ -43,8 +48,13 @@ class SafetyNetServiceTest {
     }
 
     @Test
-    void getChildAlertNullThrowExceptionTest() {
+    void getChildAlertNullAddressThrowExceptionTest() {
         assertThrows(IllegalArgumentException.class, () -> safetyNetService.getChildAlert(null));
+    }
+
+    @Test
+    void getChildAlertBadAddressThrowExceptionTest() {
+        assertThrows(NotFoundException.class, () -> safetyNetService.getChildAlert("toto"));
     }
 
     @Test
@@ -60,6 +70,11 @@ class SafetyNetServiceTest {
     }
 
     @Test
+    void getPhoneNumbersByNotExistingFireStationThrowExceptionTest() {
+        assertThrows(NotFoundException.class, () -> safetyNetService.getPhoneNumbersByFireStation("8"));
+    }
+
+    @Test
     void getPersonByAddressTest() {
         List<FireResponseDTO> actual = safetyNetService.getPersonByAddress("892 Downing Ct");
         List<FireResponseDTO> expected = CommonTestData.getPersonByAddress();
@@ -72,6 +87,11 @@ class SafetyNetServiceTest {
     }
 
     @Test
+    void getPersonByNotExistingAddressNullThrowExceptionTest() {
+        assertThrows(NotFoundException.class, () -> safetyNetService.getPersonByAddress("toto"));
+    }
+
+    @Test
     void getHouseholdByFireStationTest() {
         List<FloodResponseDTO> actual = safetyNetService.getHouseholdByFireStation(List.of("2"));
         List<FloodResponseDTO> expected = CommonTestData.getHouseholdByFireStation();
@@ -81,6 +101,11 @@ class SafetyNetServiceTest {
     @Test
     void getHouseholdByFireStationNullThrowExceptionTest() {
         assertThrows(IllegalArgumentException.class, () -> safetyNetService.getHouseholdByFireStation(null));
+    }
+
+    @Test
+    void getHouseholdByNotExistingFireStationNullThrowExceptionTest() {
+        assertThrows(NotFoundException.class, () -> safetyNetService.getHouseholdByFireStation(List.of("8")));
     }
 
     @Test
@@ -103,5 +128,10 @@ class SafetyNetServiceTest {
     @Test
     void getCommunityEmailNullThrowExceptionTest() {
         assertThrows(IllegalArgumentException.class, () -> safetyNetService.getCommunityEmail(null));
+    }
+
+    @Test
+    void getCommunityEmailByNotExistingCityThrowExceptionTest() {
+        assertThrows(NotFoundException.class, () -> safetyNetService.getCommunityEmail("toto"));
     }
 }
