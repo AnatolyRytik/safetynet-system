@@ -8,7 +8,6 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.validation.constraints.NotBlank;
-import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 
@@ -21,7 +20,7 @@ import java.util.Set;
 public class MedicalRecord extends AbstractBaseEntity {
 
     @JsonFormat(pattern = "MM/dd/yyyy")
-    Date birthdate;
+    String birthdate;
     @ElementCollection(fetch = FetchType.EAGER)
     Set<String> medications;
     @ElementCollection(fetch = FetchType.EAGER)

@@ -15,6 +15,10 @@ public class CommonTestData {
         return new Person("", "", "", "", "", "", "");
     }
 
+    public static Person getNotExistingPerson() {
+        return new Person("Toto", "Tata", "", "", "", "", "");
+    }
+
     public static Person getPersonToAdd() {
         return new Person("Ericson", "Cadigans", "951 LoneTree Rd", "Culver", "97451", "841-874-7458", "gramps@email.com");
     }
@@ -23,8 +27,16 @@ public class CommonTestData {
         return new Person("John", "Boyd", "1509 Culver St", "Paris", "97451", "841-874-6512", "jaboyd@email.com");
     }
 
+    public static Person getPersonToDelete() {
+        return new Person("John", "Boyd", "1509 Culver St", "Paris", "97451", "841-874-6512", "jaboyd@email.com");
+    }
+
     public static FireStation getEmptyFireStation() {
         return new FireStation("", "");
+    }
+
+    public static FireStation getNotExistingFireStation() {
+        return new FireStation("toto", "tata");
     }
 
     public static FireStation getFireStationToAdd() {
@@ -36,15 +48,23 @@ public class CommonTestData {
     }
 
     public static MedicalRecord getEmptyMedicalRecord() {
-        return new MedicalRecord(new Date(1975, Calendar.JUNE, 12), Collections.emptySet(), Collections.emptySet(), "", "");
+        return new MedicalRecord("06/12/1975", Collections.emptySet(), Collections.emptySet(), "", "");
     }
 
     public static MedicalRecord getMedicalRecordToAdd() {
-        return new MedicalRecord((new Date(1975, Calendar.JUNE, 12)), Set.of("ibupurin:200mg", "hydrapermazol:400mg"), Set.of("nillacilan"), "Nickolas", "Cage");
+        return new MedicalRecord("06/12/1975", Set.of("ibupurin:200mg", "hydrapermazol:400mg"), Set.of("nillacilan"), "Nickolas", "Cage");
     }
 
     public static MedicalRecord getMedicalRecordToUpdate() {
-        return new MedicalRecord((new Date(1984, Calendar.JUNE, 3)), Set.of("doliprane:1000mg"), Collections.emptySet(), "John", "Boyd");
+        return new MedicalRecord("06/03/1984", Set.of("doliprane:1000mg"), Collections.emptySet(), "John", "Boyd");
+    }
+
+    public static MedicalRecord getNotExistingMedicalRecord() {
+        return new MedicalRecord("06/03/1989", Set.of("doliprane:1000mg"), Collections.emptySet(), "Toto", "Tata");
+    }
+
+    public static MedicalRecord getMedicalRecordToDelete() {
+        return new MedicalRecord("06/03/1984", Set.of("doliprane:1000mg"), Collections.emptySet(), "John", "Boyd");
     }
 
     public static StationCoverageDTO getPersonByStationNumber() {

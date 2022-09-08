@@ -2,21 +2,22 @@ package com.safetynet.safetynetsystem.util;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.ZoneId;
-import java.util.Date;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 public class PersonUtil {
 
-    public static int calculateAge(Date birthDate) {
-        LocalDate birthDateLocal = convertToLocalDateViaInstant(birthDate);
+    public static int calculateAge(String birthdate) {
         LocalDate currentDate = LocalDate.now();
-
-        return Period.between(birthDateLocal, currentDate).getYears();
-    }
-
-    private static LocalDate convertToLocalDateViaInstant(Date dateToConvert) {
-        return dateToConvert.toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
+        int age = 0;
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.FRANCE);
+            LocalDate birthDate = LocalDate.parse(birthdate, formatter);
+            age = Period.between(birthDate, currentDate).getYears();
+            return age;
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
+        return age;
     }
 }
