@@ -21,7 +21,8 @@ public class PersonInfoDTO {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof PersonInfoDTO that)) return false;
+        if (!(o instanceof PersonInfoDTO)) return false;
+        PersonInfoDTO that = (PersonInfoDTO) o;
         return age == that.age && Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(address, that.address) && Objects.equals(email, that.email) && Objects.equals(medications, that.medications) && Objects.equals(allergies, that.allergies);
     }
 

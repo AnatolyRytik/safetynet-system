@@ -32,17 +32,17 @@ public class MedicalRecord extends AbstractBaseEntity {
     @NaturalId
     private String lastName;
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof MedicalRecord that)) return false;
-        return Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(birthdate, that.birthdate) && Objects.equals(medications, that.medications) && Objects.equals(allergies, that.allergies);
+        if (!(o instanceof MedicalRecord)) return false;
+        MedicalRecord that = (MedicalRecord) o;
+        return Objects.equals(birthdate, that.birthdate) && Objects.equals(medications, that.medications) && Objects.equals(allergies, that.allergies) && Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(birthdate, medications, allergies, firstName, lastName);
     }
-
-
 }

@@ -21,7 +21,8 @@ public class FloodResponseDTO {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof FloodResponseDTO that)) return false;
+        if (!(o instanceof FloodResponseDTO)) return false;
+        FloodResponseDTO that = (FloodResponseDTO) o;
         return age == that.age && Objects.equals(address, that.address) && Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(phone, that.phone) && Objects.equals(station, that.station) && Objects.equals(medications, that.medications) && Objects.equals(allergies, that.allergies);
     }
 
@@ -29,5 +30,4 @@ public class FloodResponseDTO {
     public int hashCode() {
         return Objects.hash(address, firstName, lastName, phone, age, station, medications, allergies);
     }
-
 }
