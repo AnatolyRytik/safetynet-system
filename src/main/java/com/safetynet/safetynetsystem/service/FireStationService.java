@@ -4,11 +4,14 @@ import com.safetynet.safetynetsystem.model.FireStation;
 import com.safetynet.safetynetsystem.repository.FireStationRepository;
 import com.safetynet.safetynetsystem.repository.PersonRepository;
 import com.safetynet.safetynetsystem.util.error.NotFoundException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 @Service
 public class FireStationService {
+    private static final Logger log = LogManager.getLogger(FireStationService.class);
     private final FireStationRepository firestationRepository;
 
     public FireStationService(FireStationRepository firestationRepository, PersonRepository personRepository) {
@@ -17,6 +20,7 @@ public class FireStationService {
 
     public FireStation save(FireStation firestation) {
         Assert.notNull(firestation, "Fire station must not be null");
+        log.info("save successful of fire station ={}", firestation);
         return firestationRepository.save(firestation);
     }
 

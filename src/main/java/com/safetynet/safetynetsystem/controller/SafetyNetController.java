@@ -3,7 +3,8 @@ package com.safetynet.safetynetsystem.controller;
 import com.safetynet.safetynetsystem.dto.*;
 import com.safetynet.safetynetsystem.service.SafetyNetService;
 import com.safetynet.safetynetsystem.util.error.NotFoundException;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,10 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Log4j2
+
 @RestController
 public class SafetyNetController {
+    private static final Logger log = LogManager.getLogger(SafetyNetController.class);
     private final SafetyNetService safetyNetService;
+
 
     public SafetyNetController(SafetyNetService safetyNetService) {
         this.safetyNetService = safetyNetService;
@@ -28,10 +31,12 @@ public class SafetyNetController {
         try {
             stationCoverageDTO = safetyNetService.getPersonByStationNumber(stationNumber);
         } catch (NotFoundException e) {
+            log.error("Not found station number= {}", stationNumber);
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body("Station not found");
         }
+        log.info("search result= {}", stationCoverageDTO.toString());
         return new ResponseEntity<>(stationCoverageDTO, HttpStatus.OK);
     }
 
@@ -42,10 +47,12 @@ public class SafetyNetController {
         try {
             kids = safetyNetService.getChildAlert(address);
         } catch (NotFoundException e) {
+            log.error("Not found station address= {}", address);
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body("Address not found");
         }
+        log.info("search result= {}", kids.toString());
         return new ResponseEntity<>(kids, HttpStatus.OK);
     }
 
@@ -56,10 +63,12 @@ public class SafetyNetController {
         try {
             phoneNumbers = safetyNetService.getPhoneNumbersByFireStation(station);
         } catch (NotFoundException e) {
+            log.error("Not found station number= {}", station);
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body("Station not found");
         }
+        log.info("search result= {}", phoneNumbers.toString());
         return new ResponseEntity<>(phoneNumbers, HttpStatus.OK);
     }
 
@@ -70,24 +79,28 @@ public class SafetyNetController {
         try {
             fireAlertDTOList = safetyNetService.getPersonByAddress(address);
         } catch (NotFoundException e) {
+            log.error("Not found address= {}", address);
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body("Address not found");
         }
+        log.info("search result= {}", fireAlertDTOList.toString());
         return new ResponseEntity<>(fireAlertDTOList, HttpStatus.OK);
     }
 
     @GetMapping(value = "/flood/stations", produces = "application/json")
     public ResponseEntity getHouseholdByFireStation(@RequestParam List<String> stations) {
-        log.info("in case of flood get persons by stations=");
+        log.info("in case of flood get persons by stations={}", stations);
         List<FloodResponseDTO> floodAlertDTOList;
         try {
             floodAlertDTOList = safetyNetService.getHouseholdByFireStation(stations);
         } catch (NotFoundException e) {
+            log.error("in case of flood get persons by stations={}", stations);
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body("Station not found");
         }
+        log.info("search result= {}", floodAlertDTOList.toString());
         return new ResponseEntity<>(floodAlertDTOList, HttpStatus.OK);
     }
 
@@ -99,10 +112,12 @@ public class SafetyNetController {
         try {
             personUpdated = safetyNetService.getPersonInfo(firstName, lastName);
         } catch (NotFoundException e) {
+            log.error("Not found person info by name= {} and lastname = {}", firstName, lastName);
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body("Person not found");
         }
+        log.info("search result= {}", personUpdated.toString());
         return new ResponseEntity<>(personUpdated, HttpStatus.OK);
     }
 
@@ -113,10 +128,12 @@ public class SafetyNetController {
         try {
             emailList = safetyNetService.getCommunityEmail(city);
         } catch (NotFoundException e) {
+            log.error("Not found city= {}", city);
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body("City not found");
         }
+        log.info("search result= {}", emailList.toString());
         return new ResponseEntity<>(emailList, HttpStatus.OK);
     }
 }

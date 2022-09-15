@@ -2,12 +2,14 @@ package com.safetynet.safetynetsystem.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.Objects;
 import java.util.Set;
 
 @AllArgsConstructor
 @Getter
+@ToString
 public class PersonInfoDTO {
 
     private String firstName;

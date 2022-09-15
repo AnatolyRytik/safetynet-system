@@ -3,16 +3,17 @@ package com.safetynet.safetynetsystem.controller;
 import com.safetynet.safetynetsystem.model.MedicalRecord;
 import com.safetynet.safetynetsystem.service.MedicalRecordService;
 import com.safetynet.safetynetsystem.util.error.NotFoundException;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-@Log4j2
 @RestController
 public class MedicalRecordController {
+    private static final Logger log = LogManager.getLogger(MedicalRecordController.class);
     private final MedicalRecordService medicalRecordService;
 
     public MedicalRecordController(MedicalRecordService medicalRecordService) {
@@ -30,15 +31,17 @@ public class MedicalRecordController {
     public ResponseEntity updateByFirstNameAndLastName(@Valid @RequestBody MedicalRecord medicalRecord,
                                                        @RequestParam String firstName,
                                                        @RequestParam String lastName) {
-        log.info("update medical record for={} {}", medicalRecord.getFirstName(), medicalRecord.getLastName());
+        log.info("update medical record ={}", medicalRecord);
         MedicalRecord medicalRecordUpdated;
         try {
             medicalRecordUpdated = medicalRecordService.updateByFirstNameAndLastName(medicalRecord, firstName, lastName);
         } catch (NotFoundException e) {
+            log.error("Not found medical record for={} {}", medicalRecord.getFirstName(), medicalRecord.getLastName());
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body("Medical record not found");
         }
+        log.info("successful update medical record ={}", medicalRecord);
         return new ResponseEntity<>(medicalRecordUpdated, HttpStatus.OK);
     }
 
@@ -49,10 +52,12 @@ public class MedicalRecordController {
         try {
             medicalRecordService.deleteByFirstNameAndLastName(firstName, lastName);
         } catch (NotFoundException e) {
+            log.error("not found medical record for={} {}", firstName, lastName);
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body("Medical record not found");
         }
+        log.info("successful delete medical record for={} {}", firstName, lastName);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

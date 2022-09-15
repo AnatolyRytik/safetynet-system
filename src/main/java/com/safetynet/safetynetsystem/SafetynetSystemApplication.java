@@ -9,6 +9,8 @@ import com.safetynet.safetynetsystem.model.Person;
 import com.safetynet.safetynetsystem.repository.FireStationRepository;
 import com.safetynet.safetynetsystem.repository.MedicalRecordRepository;
 import com.safetynet.safetynetsystem.repository.PersonRepository;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,6 +24,7 @@ import java.util.List;
 @SpringBootApplication
 public class SafetynetSystemApplication {
 
+    private static final Logger logger = LogManager.getLogger(SafetynetSystemApplication.class);
     private JsonNode jsonTree;
     private ObjectMapper mapper;
 
@@ -34,7 +37,7 @@ public class SafetynetSystemApplication {
         return args -> {
             // read JSON and load json
             mapper = new ObjectMapper();
-            TypeReference<Person> typeReference = new TypeReference<Person>() {
+            TypeReference<Person> typeReference = new TypeReference<>() {
             };
             InputStream inputStream = TypeReference.class.getResourceAsStream("/json/data.json");
             try {
@@ -49,9 +52,9 @@ public class SafetynetSystemApplication {
                 List<MedicalRecord> medicalRecords = getListFromJson("medicalrecords", MedicalRecord.class);
                 medicalRecordRepository.saveAll(medicalRecords);
 
-                System.out.println("Data Saved!");
+                logger.info("All class entities have been created");
             } catch (IOException e) {
-                System.out.println("Unable to save data: " + e.getMessage());
+                logger.error("Unable populate entities: " + e.getMessage());
             }
         };
     }
@@ -63,4 +66,5 @@ public class SafetynetSystemApplication {
         }
         return list;
     }
+
 }

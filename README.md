@@ -9,7 +9,6 @@ Stack
 * Maven
 * Spring Boot 2.7.0
 * Spring Data JPA
-* H2 Database
 * JUnit 5
 * Lombok
 * Log4J

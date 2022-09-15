@@ -3,11 +3,13 @@ package com.safetynet.safetynetsystem.dto;
 import com.safetynet.safetynetsystem.model.Person;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.Objects;
 
 @Getter
 @AllArgsConstructor
+@ToString
 public class PersonShortDataDTO {
 
     private final String firstName;
